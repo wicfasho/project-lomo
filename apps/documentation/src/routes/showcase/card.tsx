@@ -18,11 +18,14 @@ import { Anatomy, CodeExample, DocSection, FeatureList, UsageGuidelines } from "
 const COLORS = ["terracotta", "sage", "yellow", "gray", "red", "amber"] as const;
 const VARIANTS = ["ghost", "surface", "classic"] as const;
 const SIZES = [1, 2, 3, 4, 5] as const;
+const BORDER = ["none", "small", "medium", "large"] as const;
 
 const PROPS = [
 	{ name: "variant", type: "\"ghost\" | \"surface\" | \"classic\"", default: "\"surface\"" },
 	{ name: "size", type: "1 | 2 | 3 | 4 | 5", default: "1" },
 	{ name: "color", type: "\"terracotta\" | \"sage\" | \"yellow\" | \"gray\" | \"red\" | \"amber\"", default: "\"gray\"" },
+	{ name: "border", type: "\"none\" | \"small\" | \"medium\" | \"large\"", default: "\"none\"" },
+	{ name: "borderColor", type: "\"terracotta\" | \"sage\" | \"yellow\" | \"gray\" | \"red\" | \"amber\"", default: "undefined" },
 ];
 
 function CardPage() {
@@ -38,11 +41,13 @@ function CardPage() {
 			<Playground
 				componentName="Card"
 				childrenLabel="Card content"
-				defaults={{ variant: "surface", size: 1, color: "gray" }}
+				defaults={{ variant: "surface", size: 1, color: "gray", border: "none", borderColor: "terracotta" }}
 				controls={[
 					{ name: "variant", type: "segment", options: VARIANTS },
 					{ name: "size", type: "segment", options: SIZES },
 					{ name: "color", type: "segment", options: COLORS },
+					{ name: "border", type: "segment", options: BORDER },
+					{ name: "borderColor", type: "segment", options: COLORS },
 				]}
 			>
 				{props => (
@@ -50,6 +55,8 @@ function CardPage() {
 						variant={props.variant as any}
 						size={props.size as any}
 						color={props.color as any}
+						border={props.border as any}
+						borderColor={props.borderColor as any}
 					>
 						<Heading level={3} size={3} weight="medium">Card title</Heading>
 						<Text size={2} color="gray">Card description text goes here.</Text>
@@ -413,6 +420,51 @@ function CardPage() {
 							))}
 						</div>
 					</DemoSection>
+
+					<DemoSection title="Radius Overrides" description="Override the global radius preset for specific cards using the data-radius attribute.">
+						<div className="flex flex-wrap items-start gap-4">
+							<Card data-radius="none" size={2} className="w-48">
+								<Text size={2} weight="medium">None</Text>
+							</Card>
+							<Card data-radius="small" size={2} className="w-48">
+								<Text size={2} weight="medium">Small</Text>
+							</Card>
+							<Card data-radius="medium" size={2} className="w-48">
+								<Text size={2} weight="medium">Medium</Text>
+							</Card>
+							<Card data-radius="large" size={2} className="w-48">
+								<Text size={2} weight="medium">Large</Text>
+							</Card>
+							<Card data-radius="full" size={2} className="w-48">
+								<Text size={2} weight="medium">Full</Text>
+							</Card>
+						</div>
+					</DemoSection>
+
+					<DemoSection title="Border" description="Border size options. Combine with borderColor for custom styling.">
+						<div className="flex flex-wrap items-start gap-4">
+							{BORDER.map(border => (
+								<Card key={border} border={border} borderColor="terracotta" size={2} className="w-48">
+									<Text size={2} weight="medium">{border.charAt(0).toUpperCase() + border.slice(1)}</Text>
+								</Card>
+							))}
+						</div>
+					</DemoSection>
+
+					<DemoSection title="Border × Color" description="Border styling with all available colors.">
+						<div className="flex flex-col gap-4">
+							{BORDER.filter(b => b !== "none").map(border => (
+								<div key={border} className="flex flex-wrap items-start gap-3">
+									{COLORS.map(color => (
+										<Card key={color} border={border} borderColor={color} size={1} className="w-32">
+											<Text size={1}>{color}</Text>
+										</Card>
+									))}
+								</div>
+							))}
+						</div>
+					</DemoSection>
+
 				</div>
 			</DocSection>
 

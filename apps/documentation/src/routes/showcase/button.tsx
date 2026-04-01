@@ -15,12 +15,15 @@ const COLORS = ["terracotta", "sage", "yellow", "gray", "red", "amber"] as const
 const VARIANTS = ["solid", "soft", "outline", "ghost"] as const;
 const SIZES = [1, 2, 3, 4] as const;
 const ICON_MODES = ["none", "leading", "only", "loading"] as const;
+const BORDER = ["none", "small", "medium", "large"] as const;
 const ICON_SIZES: Record<number, string> = { 1: "size-4", 2: "size-5", 3: "size-5", 4: "size-6" };
 
 const PROPS = [
 	{ name: "variant", type: "\"solid\" | \"soft\" | \"outline\" | \"ghost\"", default: "\"solid\"" },
 	{ name: "size", type: "1 | 2 | 3 | 4", default: "2" },
 	{ name: "color", type: "\"terracotta\" | \"sage\" | \"yellow\" | \"gray\" | \"red\" | \"amber\"", default: "\"terracotta\"" },
+	{ name: "border", type: "\"none\" | \"small\" | \"medium\" | \"large\"", default: "\"none\"" },
+	{ name: "borderColor", type: "\"terracotta\" | \"sage\" | \"yellow\" | \"gray\" | \"red\" | \"amber\"", default: "undefined" },
 	{ name: "icon", type: "boolean", default: "false" },
 	{ name: "isDisabled", type: "boolean", default: "false" },
 ];
@@ -50,11 +53,13 @@ function ButtonPage() {
 							return "Button";
 					}
 				}}
-				defaults={{ variant: "solid", size: 2, color: "terracotta", iconMode: "none", isDisabled: false }}
+				defaults={{ variant: "solid", size: 2, color: "terracotta", iconMode: "none", border: "none", borderColor: "terracotta", isDisabled: false }}
 				controls={[
 					{ name: "variant", type: "segment", options: VARIANTS },
 					{ name: "size", type: "segment", options: SIZES },
 					{ name: "color", type: "segment", options: COLORS },
+					{ name: "border", type: "segment", options: BORDER },
+					{ name: "borderColor", type: "segment", options: COLORS },
 					{ name: "iconMode", type: "segment", options: ICON_MODES },
 					{ name: "isDisabled", type: "toggle" },
 				]}
@@ -74,6 +79,8 @@ function ButtonPage() {
 						variant: props.variant as any,
 						size: props.size as any,
 						color: props.color as any,
+						border: props.border as any,
+						borderColor: props.borderColor as any,
 					};
 
 					if (props.iconMode === "only") {
@@ -246,6 +253,34 @@ function ButtonPage() {
 					>
 						<Button isDisabled>Submit</Button>
 					</CodeExample>
+
+					<CodeExample
+						title="Border Styles"
+						description="Add borders to buttons with customizable size and color. Borders work with all variant types."
+						code={`<div className="flex flex-col gap-3">
+  <div className="flex gap-2">
+    <Button border="small" borderColor="terracotta">Small</Button>
+    <Button border="medium" borderColor="sage">Medium</Button>
+    <Button border="large" borderColor="yellow">Large</Button>
+  </div>
+  <div className="flex gap-2">
+    <Button variant="soft" border="medium" borderColor="red">Soft + Border</Button>
+    <Button variant="outline" border="small" borderColor="gray">Outline + Border</Button>
+  </div>
+</div>`}
+					>
+						<div className="flex flex-col gap-3">
+							<div className="flex gap-2">
+								<Button border="small" borderColor="terracotta">Small</Button>
+								<Button border="medium" borderColor="sage">Medium</Button>
+								<Button border="large" borderColor="yellow">Large</Button>
+							</div>
+							<div className="flex gap-2">
+								<Button variant="soft" border="medium" borderColor="red">Soft + Border</Button>
+								<Button variant="outline" border="small" borderColor="gray">Outline + Border</Button>
+							</div>
+						</div>
+					</CodeExample>
 				</div>
 			</DocSection>
 
@@ -319,15 +354,40 @@ function ButtonPage() {
 						</div>
 					</DemoSection>
 
-					<DemoSection title="Disabled" description="Disabled state across all variants.">
+					<DemoSection title="Radius Overrides" description="Override the global radius preset for specific buttons using the data-radius attribute.">
 						<div className="flex flex-wrap items-center gap-3">
-							{VARIANTS.map(variant => (
-								<Button key={variant} variant={variant} isDisabled>
-									{variant.charAt(0).toUpperCase() + variant.slice(1)}
+							<Button data-radius="none">None</Button>
+							<Button data-radius="small">Small</Button>
+							<Button data-radius="medium">Medium</Button>
+							<Button data-radius="large">Large</Button>
+							<Button data-radius="full">Full</Button>
+						</div>
+					</DemoSection>
+
+					<DemoSection title="Border" description="Border size options. Combine with borderColor for custom styling.">
+						<div className="flex flex-wrap items-center gap-3">
+							{BORDER.map(border => (
+								<Button key={border} border={border} borderColor="terracotta">
+									{border.charAt(0).toUpperCase() + border.slice(1)}
 								</Button>
 							))}
 						</div>
 					</DemoSection>
+
+					<DemoSection title="Border × Color" description="Border styling with all available colors.">
+						<div className="flex flex-col gap-4">
+							{BORDER.filter(b => b !== "none").map(border => (
+								<div key={border} className="flex flex-wrap items-center gap-3">
+									{COLORS.map(color => (
+										<Button key={color} border={border} borderColor={color}>
+											{color.charAt(0).toUpperCase() + color.slice(1)}
+										</Button>
+									))}
+								</div>
+							))}
+						</div>
+					</DemoSection>
+
 				</div>
 			</DocSection>
 
